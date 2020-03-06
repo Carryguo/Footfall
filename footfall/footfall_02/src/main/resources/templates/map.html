@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+    <title>地图</title>
+    <style type="text/css">
+        html {
+            height: 100%
+        }
+        
+        body {
+            height: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+        
+        #container {
+            height: 100%
+        }
+        
+        .div-a {
+            float: left;
+            /*width: 20%;*/
+            /* border: 1px solid #F00 */
+            position: absolute;
+            z-index:2;
+            margin-left: 20px;
+            margin-top: 20px;
+        }
+        
+        .div-b {
+            /*float: right;*/
+            /*width: 80%;*/
+            /* border: 1px solid #000 */
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index:1;
+
+        }
+        form {
+
+            position: relative;
+            z-index: 3;/*用z-index此取值方可生效。
+此属性参数值越大，则被层叠在最上面。*/
+            text-align:center;
+
+            /*  top:50%;*/
+        }
+
+        form button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            -o-appearance: none;
+            outline: 0;
+            background-color: white;
+            border: 0;
+            /*  padding: 10px 15px;*/
+            color: #0033ee;
+            border-radius: 5px 5px 15px 15px /5px 5px 15px 15px;;
+            /*border-radius: 5px 5px 15px 15px /5px 5px 15px 15px;*/
+            width: 250px;
+            cursor: pointer;
+            font-size: 18px;
+            -webkit-transition-duration: 0.25s;
+            transition-duration: 0.25s;
+            -o-transition-duration: 0.25s;
+            -moz-transition-duration: 0.25s;
+            background-color: rgba(255, 255, 255, 0.8);
+            height: 50px;
+            margin-top:20px;
+
+        }
+        form button:hover {
+            background-color: #0033ff;
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=GY2xpfBTXwtEIwGuyGTjSIHYcIVinjfF">
+    </script>
+
+</head>
+
+<body>
+    <div class="div-a">
+        <form class="form">
+            <button  onclick="back()" type="button">返回店面信息</button>
+        </form>
+    </div>
+    <div id="container" class="div-b"></div>
+</body>
+
+<script type="text/javascript">
+    function back(){
+        var canshu = window.location.href.split("=")[1];
+        location.href="/index?shop="+canshu;
+    }
+
+    var map = new BMap.Map("container"); //创建地图
+    var point = new BMap.Point(113.308268, 22.210086); //创建坐标点1
+    var myPoint = new BMap.Point(113.373809, 22.151183); //创建坐标点2
+    map.centerAndZoom(point, 12); //创建中心坐标
+
+    var marker = new BMap.Marker(point); //标记一
+    map.addOverlay(marker); //显示标志
+
+
+    var Mymarker = new BMap.Marker(myPoint); //标记二
+    map.addOverlay(Mymarker); //显示标志
+
+    var label1 = new BMap.Label("斗门店",{
+        offset:new BMap.Size(25,5)
+    });
+    var label2 = new BMap.Label("金湾店",{
+        offset:new BMap.Size(25,5)
+    });
+    //设置label
+    marker.setLabel(label1);
+    Mymarker.setLabel(label2);
+
+    marker.addEventListener("click", function() {
+        window.location.href = "/index?shop=1";
+    });
+
+    Mymarker.addEventListener("click", function() {
+        window.location.href = "/index?shop=2";
+    });
+
+
+    var opts = {
+        width : 150,     // 信息窗口宽度
+        height: 50,     // 信息窗口高度
+        title : "现在店里的人数:"  // 信息窗口标题
+    }
+
+    marker.addEventListener("mouseover", function() {
+
+        var showNowData;
+        $.ajax({
+            type: "post",
+            url: "/showNowData",
+            data: {shop:1},
+            async: false,
+            success: function (data) {
+                showNowData = data.toString();
+            }
+        });
+
+
+        var infoWindow = new BMap.InfoWindow(showNowData, opts);  // 创建信息窗口对象
+        var point1 = new BMap.Point(113.306831, 22.220793); //创建坐标点1
+        map.openInfoWindow(infoWindow, point1);      // 打开信息窗口
+
+
+
+    });
+
+    marker.addEventListener("mouseout", function() {
+        map.closeInfoWindow();      // 关闭信息窗口
+    });
+
+    Mymarker.addEventListener("mouseover", function() {
+        var showNowData;
+        $.ajax({
+            type: "post",
+            url: "/showNowData",
+            data: {shop:2},
+            async: false,
+            success: function (data) {
+                showNowData = data.toString();
+            }
+        });
+
+        var myPoint1 = new BMap.Point(113.372371, 22.16243); //创建坐标点2
+        var infoWindow = new BMap.InfoWindow(showNowData, opts);  // 创建信息窗口对象
+        map.openInfoWindow(infoWindow, myPoint1);      // 打开信息窗口
+    });
+
+    Mymarker.addEventListener("mouseout", function() {
+        map.closeInfoWindow();      // 关闭信息窗口
+    });
+
+    // map.addEventListener("click", function(e){
+    //     alert(e.point.lng + ", " + e.point.lat);
+    // });
+
+
+    map.enableScrollWheelZoom(true);
+</script>
+
+</html>

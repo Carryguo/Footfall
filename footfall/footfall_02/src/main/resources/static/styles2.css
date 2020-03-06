@@ -1,0 +1,395 @@
+/*margin外边距
+border边框
+padding内边距*/
+/*@import url();*/
+* {
+  box-sizing: border-box;/*输入和按键大小相同*/
+  margin: 0;
+  padding: 0;
+  font-weight: 300;
+}
+
+body {
+  font-family: 'Source Sans Pro', sans-serif;/*输入文本框字体类型*/
+  color: white;
+  font-weight: 300;/*输入文本框字体加粗*/
+}
+body ::-webkit-input-placeholder {
+  /* WebKit browsers */
+  font-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  font-weight: 300;
+}
+body :-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  font-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  opacity: 1;
+  font-weight: 300;
+}
+body ::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  font-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  opacity: 1;
+  font-weight: 300;
+}
+body :-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  font-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  font-weight: 300;
+}
+/*以上为浏览器兼容性*/
+/*网页默认会有一定的边距，清除网页的默认边距*/
+*{
+        margin: 0;
+        padding: 0;
+        outline: 0 none;
+
+      }
+      html,body{
+        height: 100%;
+        width: 100%;
+      }
+html,body{overflow:hidden;overflow-y:auto;}
+/*html,body{overflow-x:hidden;overflow-y:auto;}*/
+/*禁止出现滚动条*/
+.wrapper {
+  background: #50a3a2;
+  background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+   background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
+      background: -o-linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
+         background: -moz-linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
+  /*背景颜色渐变*/
+  /*在线生成渐变样式，工具地址(很强大)：http://www.colorzilla.com/gradient-editor/*/
+  opacity: 0.8;/*透明度*/
+  position: absolute;
+/*  top: 50%;
+  left: 0;*/
+  width: 100%;
+  height: 100%;
+  left:0; top:0;
+  overflow: hidden;
+    /*背景禁止滚动*/
+/* padding-top:10px;是指容器内的内容距离容器的顶部有10个
+像素，是包含在容器内的；
+margin-top:10px;是指容器本身的顶部距离其他容器有10个像素
+，不包含在容器内；
+top:10px;是指容器本身的顶部距离页面的顶端有10个像素*/
+/*裁剪超出标签范围的内容
+清除浮动.参考CSS 浮动(float)注意点
+当两个盒子嵌套时,避免设置内层margin-top时,外层盒子也被
+顶下来. CSS盒子模型注意点*/
+}
+.wrapper.form-success .container h1 {
+  -webkit-transform: translateY(120px);
+    -moz-transform: translateY(120px);
+      -o-transform: translateY(120px);
+        -ms-transform: translateY(120px);
+          transform: translateY(120px);/*兼容*/
+}
+/*welcome的移动*/
+/*w
+p{color:blue;}
+p.color{color: red;}
+.color{color:green;}
+-->
+<h1>CSS交集选择器示例</h1>
+<p>这是普通段落，蓝色。</p>
+<p class="color">这是普通段落，红色。</p>
+<h2 class="color">这是标题文本，绿色。</h2>
+ */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 80px 0;
+  height: 400px;
+  text-align: center;
+
+}
+
+
+
+.container h1 {
+  font-size: 40px;/*文本的字体尺寸*/
+  -webkit-transition-duration: 1s;
+  -moz-transition-duration: 1s;
+  -o-transition-duration: 1s;
+  -ms-transition-duration: 1s;
+  transition-duration: 1s;/*指定对象过渡的持续时间*/
+
+  /*-webkit-transition-timing-function: ease-in-put;*/
+  /*-moz-transition-timing-function: ease-in-put;*/
+  /*-o-transition-timing-function: ease-in-put;*/
+  /*-ms-transition-timing-function: ease-in-put;*/
+  /*transition-timing-function: ease-in-put;!*过渡效果的速度曲线*!*/
+  font-weight: 200;
+  
+  position: relative;
+  top:25%;
+}
+
+form {
+  padding: 20px 0;
+  position: relative;
+  z-index: 2;
+
+  top:50%;
+}
+form input {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+       -o-appearance: none;
+          appearance: none;/*作为改变任何元素的浏览器默认风格*/
+  outline: 0;/*去边框*/
+  border: 1px solid /*实线*/ rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.2);/*透明度*/
+  width: 250px;
+  border-radius: 5px 5px 15px 15px /5px 5px 15px 15px;/*边框圆角属性*/
+  padding: 10px 15px;
+  margin: 0 auto 10px auto;
+  display: block;/*块对象的默认值。将对象强制作为块对象呈递，为对象之后添加新行*/
+  text-align: center;/*usernamepassword居中*//*center。block块元素*/
+  font-size: 18px;/*字体大小*/
+  color: white;
+  -webkit-transition-duration: 0.25s;
+          transition-duration: 0.25s;
+          -o-transition-duration: 0.25s;
+          -moz-transition-duration: 0.25s;
+  font-weight: 300;
+}
+form input:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+/*当鼠标悬停在所指定的元素上时所使用的样式*/
+form input:focus {
+  background-color: white;
+  width: 300px;
+  color: #53e3a6;
+}
+/*当元素获得光标焦点时使用的样式，
+主要用在文本框输入文字时使用*/
+form button {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+          -o-appearance: none;
+  outline: 0;
+  background-color: white;
+  border: 0;
+  padding: 10px 15px;
+  color: #53e3a6;
+  border-radius: 3px;
+  width: 250px;
+  cursor: pointer;
+  font-size: 18px;
+  -webkit-transition-duration: 0.5s;
+          transition-duration: 0.5s;
+          -o-transition-duration: 0.5s;
+          -moz-transition-duration: 0.5s;
+}
+form button:hover {
+  background-color: #B0E0E6;
+    color:white;
+}
+form a {
+  position: relative;
+}
+form a:link,form a:visited{
+ text-decoration:none;  /*超链接无下划线*/
+}
+form a:hover{
+ /*text-decoration:underline;*/  /*鼠标放上去有下划线*/
+ color :red;
+}
+.bg-bubbles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;/*提高显示的层级*/
+}
+.bg-bubbles li {
+  position: absolute;
+  list-style: none;/*表明list项前面没有什么修饰*/
+  display: block;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.15);
+  bottom: -160px;/*属性规定元素的底部边缘。该属性定
+  义了定位元素下外边距边界与其包含块下边界之间的偏移。
+  */
+  -webkit-animation: square 25s infinite;
+  animation: square 25s infinite;/*移动时间*/
+  -moz-animation: square 25s infinite;
+  -o-animation: square 25s infinite;
+
+  -webkit-transition-timing-function: linear;
+  transition-timing-function: linear;
+    -o-transition-timing-function: linear;
+      -moz-transition-timing-function: linear;
+}
+.bg-bubbles li:nth-child(1) {
+  left: 10%;
+}
+.bg-bubbles li:nth-child(2) {
+  left: 20%;
+  width: 80px;
+  height: 80px;
+  -webkit-animation-delay: 2s;/*属性定义动画何时开始*/
+          animation-delay: 2s;
+          -o-animation-delay: 2s;
+          -moz-animation-delay: 2s;
+  -webkit-animation-duration: 17s;/*规定完成动画所花费的时间。默认值是 0，意味着没有动画效果*/
+          animation-duration: 17s;
+          -o-animation-duration: 17s;
+          -moz-animation-duration: 17s;
+}
+.bg-bubbles li:nth-child(3) {
+  left: 25%;
+  -webkit-animation-delay: 4s;
+          animation-delay: 4s;
+          -o-animation-delay: 4s;
+          -moz-animation-delay: 4s;
+}
+.bg-bubbles li:nth-child(4) {
+  left: 40%;
+  width: 60px;
+  height: 60px;
+  -webkit-animation-duration: 22s;
+          animation-duration: 22s;
+          -o-animation-duration: 22s;
+          -moz-animation-duration: 22s;
+  background-color: rgba(255, 255, 255, 0.25);
+}
+.bg-bubbles li:nth-child(5) {
+  left: 70%;
+}
+.bg-bubbles li:nth-child(6) {
+  left: 80%;
+  width: 120px;
+  height: 120px;
+  -webkit-animation-delay: 3s;
+          animation-delay: 3s;
+          -o-animation-delay: 3s;
+          -moz-animation-delay: 3s;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.bg-bubbles li:nth-child(7) {
+  left: 32%;
+  width: 160px;
+  height: 160px;
+  -webkit-animation-delay: 7s;
+          animation-delay: 7s;
+          -o-animation-delay: 7s;
+          -moz-animation-delay: 7s;
+}
+.bg-bubbles li:nth-child(8) {
+  left: 55%;
+  width: 20px;
+  height: 20px;
+  -webkit-animation-delay: 15s;
+          animation-delay: 15s;
+          -o-animation-delay: 15s;
+          -moz-animation-delay: 15s;
+  -webkit-animation-duration: 40s;
+          animation-duration: 40s;
+          -o-animation-duration: 40s;
+          -moz-animation-duration: 40s;
+}
+.bg-bubbles li:nth-child(9) {
+  left: 25%;
+  width: 10px;
+  height: 10px;
+  -webkit-animation-delay: 2s;
+          animation-delay: 2s;
+          -o-animation-delay: 2s;
+          -moz-animation-delay: 2s;
+  -webkit-animation-duration: 40s;
+          animation-duration: 40s;
+          -o-animation-duration: 40s;
+          -moz-animation-duration: 40s;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+.bg-bubbles li:nth-child(10) {
+  left: 90%;
+  width: 160px;
+  height: 160px;
+  -webkit-animation-delay: 11s;
+          animation-delay: 11s;
+          -ms-animation-delay: 11s;
+          -o-animation-delay: 11s;
+          -moz-animation-delay: 11s;
+}
+@-webkit-keyframes square {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+            -ms-transform: translateY(0);
+            -o-transform: translateY(0);
+            -moz-transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-1000px) rotate(600deg);
+            transform: translateY(-1000px) rotate(600deg);
+            -ms-transform: translateY(-1000px) rotate(600deg);
+            -o-transform: translateY(-1000px) rotate(600deg);
+            -moz-transform: translateY(-1000px) rotate(600deg);
+  }
+}
+/*上下两者为兼容性*/
+@keyframes square {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+            -ms-transform: translateY(0);
+            -o-transform: translateY(0);
+            -moz-transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-1000px) rotate(600deg);
+            transform: translateY(-1000px) rotate(600deg);
+            -ms-transform: translateY(-1000px) rotate(600deg);
+            -o-transform: translateY(-1000px) rotate(600deg);
+            -moz-transform: translateY(-1000px) rotate(600deg);
+  }
+}
+@-moz-keyframes square /* Firefox */
+{
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+            -ms-transform: translateY(0);
+            -o-transform: translateY(0);
+            -moz-transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-1000px) rotate(600deg);
+            transform: translateY(-1000px) rotate(600deg);
+            -ms-transform: translateY(-1000px) rotate(600deg);
+            -o-transform: translateY(-1000px) rotate(600deg);
+            -moz-transform: translateY(-1000px) rotate(600deg);
+  }
+}
+
+
+
+@-o-keyframes square /* Opera */
+{
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+            -ms-transform: translateY(0);
+            -o-transform: translateY(0);
+            -moz-transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-1000px) rotate(600deg);
+            transform: translateY(-1000px) rotate(600deg);
+            -ms-transform: translateY(-1000px) rotate(600deg);
+            -o-transform: translateY(-1000px) rotate(600deg);
+            -moz-transform: translateY(-1000px) rotate(600deg);
+  }
+}

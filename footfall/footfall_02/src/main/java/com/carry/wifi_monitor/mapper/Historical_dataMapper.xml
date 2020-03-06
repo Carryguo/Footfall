@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.carry.wifi_monitor.mapper.Historical_dataMapper" >
+    <insert id="insert" >
+    insert into historical_data
+    (walker_number,consumer_number,new_consumer_number,old_consumer_number,historical_time,machine_id)
+    values
+    (#{walker_number},#{consumer_number},#{new_consumer_number},#{old_consumer_number},#{historical_time},#{machine_id})
+  </insert>
+</mapper>

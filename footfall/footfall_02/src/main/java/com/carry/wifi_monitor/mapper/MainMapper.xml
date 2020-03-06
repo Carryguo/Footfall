@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.carry.wifi_monitor.mapper.MainMapper" >
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into main
+    (mac,rssi,latest_time,historical_time,machine_id,first_in_time,rein_judge,visit_times)
+    values 
+    (#{mac},#{rssi},#{latest_time},#{historical_time},#{machine_id},#{first_in_time},#{rein_judge},#{visit_times})
+  </insert>
+
+  <select id="selectAll" resultType="java.lang.String" >
+    select mac from main
+  </select>
+
+
+    <select id="searchDynamicConsumer" resultType="java.lang.String" >
+        SELECT mac from main where  TIMESTAMPDIFF(MINUTE, main.latest_time, CURRENT_TIMESTAMP)&lt;2 and main.rssi&gt;#{rssi} and rein_judge=1
+  </select>
+
+  <select id="checkExist" resultType="Object" >
+    select NULLIF(mac,null ) from main where mac =#{mac} and machine_id=#{machine_id}
+  </select>
+
+    <select id="searchOutConsumer" resultType="com.carry.wifi_monitor.entity.Main" >
+    select mac,first_in_time,latest_time,machine_id from main where (TIMESTAMPDIFF(MINUTE, main.latest_time, CURRENT_TIMESTAMP)>15 and  main.rssi&gt;=#{rssi} and rein_judge = 1) or (TIMESTAMPDIFF(MINUTE, main.latest_time, CURRENT_TIMESTAMP)>15 and main.rssi&lt;=#{rssi} and rein_judge = 1)
+  </select>
+
+  <update id="update" >
+        UPDATE
+        main
+        SET
+        rssi = #{rssi},latest_time = #{latest_time},rein_judge=#{rein_judge},first_in_time=#{first_in_time}
+        WHERE
+        mac = #{mac}and machine_id=#{machine_id}
+    </update>
+
+    <select id="searchFirstTime" resultType="java.sql.Timestamp" >
+    select first_in_time from main where mac =#{mac} and machine_id=#{machine_id}
+  </select>
+
+    <select id="searchBeat" resultType="java.sql.Timestamp" >
+    select beat from main where mac =#{mac} and machine_id=#{machine_id}
+  </select>
+
+    <update id="reinJudgeUpdate">
+        UPDATE
+        main
+        SET
+        rein_judge=1
+        WHERE
+        mac = #{mac}and machine_id=#{machine_id}
+    </update>
+
+    <update id="reoutJudgeUpdate">
+        UPDATE
+        main
+        SET
+        rein_judge=0
+        WHERE
+        mac = #{mac}and machine_id=#{machine_id}
+    </update>
+
+    <update id="updateStayTime">
+        UPDATE
+        main
+        SET
+        stay_time = #{stay_time}
+        WHERE
+        mac = #{mac}and machine_id=#{machine_id}
+
+    </update>
+
+    <update id="updateBeat">
+        UPDATE
+        main
+        SET
+        beat = CURRENT_TIMESTAMP
+        WHERE
+        mac = #{mac}and machine_id=#{machine_id}
+
+    </update>
+
+    <update id="updateDeepVisitTimes">
+        UPDATE
+        main
+        SET
+        deep_visit_times = deep_visit_times+1
+        WHERE
+        mac = #{mac}and machine_id=#{machine_id}
+    </update>
+
+    <select id="searchTime" resultType="java.sql.Timestamp" >
+    select latest_time from main where mac =#{mac} and machine_id=#{machine_id}
+  </select>
+
+    <update id="reIn" >
+    UPDATE main SET visit_times = visit_times+1,historical_time =  CONCAT(historical_time,',',current_timestamp ),first_in_time=current_timestamp WHERE mac = #{mac} and machine_id=#{machine_id}
+    </update>
+
+    <select id="searchRssi" resultType="java.lang.Integer" >
+    select rssi from main where mac =#{mac} and machine_id=#{machine_id}
+  </select>
+
+    <select id="searchVisitTimes" resultType="java.lang.Integer" >
+    select visit_times from main where mac =#{mac} and machine_id=#{machine_id}
+  </select>
+    <select id="searchRein_judge" resultType="java.lang.Integer" >
+    select rein_judge from main where mac =#{mac} and machine_id=#{machine_id}
+  </select>
+</mapper>

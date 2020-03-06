@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="zh"><!-- 语言 -->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> <!-- IE8/9及以后的版本都会以最高版本IE来渲染页面 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 手机电脑缩放兼容性 -->
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0,minimum-scale=1.0,user-scalable=yes" /> -->
+    <!-- 缩放比 是否允许缩放 -->
+    <title>数据显示</title>
+    <link rel="stylesheet" type="text/css" href="/styles1.css">
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+    <script src="echarts/echarts.min.js"></script>
+    <script src="/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+    <link rel="stylesheet" type="text/css" href="/bootstrap-datetimepicker.min.css"/>
+
+    <!-- rel-css样式显示出来 -->
+
+
+</head>
+
+<body>
+
+<!-- 背景 -->
+<div class="wrapper">
+
+    <div class="vid0">
+        <h1>客流量分析</h1>
+    </div>
+
+    <div id="shop"></div>
+
+    选择时间：<input type="text" id="datetimepicker">
+
+    <!-- str -->
+
+    <div class="vid1">
+
+        <!--极限五位数-->
+
+        <div class="lou1" onclick="detail(1)">
+            今天的人流量是: <span id="lou11" style="text-align:center;line-height:65px;"></span>
+        </div>
+
+        <div class="lou2" onclick="detail(2)">
+            今天的客流量是: <span id="lou21"></span>
+        </div>
+
+        <div class="lou3" onclick="detail(3)">
+            今天的新客人量是: <span id="lou31"></span>
+        </div>
+
+        <div class="lou4" onclick="detail(4)">
+            今天的跳出量是: <span id="lou41"></span>
+        </div>
+
+        <div class="lou5">
+            现店里的客人量是: <span id="lou51"></span>
+        </div>
+
+    </div>
+
+    <!-- 设备设置 -->
+    <div class="vid2">
+
+        <form class="form">
+
+            <button  id="btn" onclick="set()" type="button">设备设置</button>
+            <button  onclick="map()" type="button">店面分布</button>
+            <!-- <button id="btn" onclick="set()" type="button">设备设置</button> -->
+            <button  onclick="machineList()" type="button">设备列表</button>
+            <button onclick="delayer()" type="button">注销</button>
+
+        </form>
+
+    </div>
+
+    <div id="mai">
+        <div id="main" ></div>
+        <div id="main1" ></div>
+    </div>
+    <ul class="bg-bubbles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+
+</body>
+<script type="text/javascript">
+    function delayer(){
+        window.location.href='login.html';
+        // window.location = "http://www.baidu.com";
+    }
+
+</script>
+<script type="text/javascript">
+
+    var formatDateTime = function (date) {
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        m = m < 10 ? ('0' + m) : m;
+        var d = date.getDate();
+        d = d < 10 ? ('0' + d) : d;
+        return y + '-' + m + '-' + d;
+    }
+
+    var timePicker = document.getElementById("datetimepicker");
+    timePicker.value=formatDateTime(new Date());
+    var timevalue =  timePicker.value;
+
+    $("#datetimepicker").datetimepicker({//选择年月日
+        format: 'yyyy-mm-dd',
+        language: 'zh-CN',
+        weekStart: 1,
+        todayBtn: 1,//显示‘今日’按钮
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,  //Number, String. 默认值：0, 'hour'，日期时间选择器所能够提供的最精确的时间选择视图。
+
+        clearBtn:false,//清除按钮
+
+        forceParse: 0
+    });
+
+    $("#datetimepicker")
+        .datetimepicker()
+        .on('changeDate', function(ev){
+            timevalue = timePicker.value;
+            alert(timevalue);
+        });
+
+    var shop =1;
+    //获取参数
+    onload = function(){
+        var canshu = window.location.href.split("=")[1];
+        if(canshu!=null)
+        {
+            shop = canshu;
+        }
+        else{
+            shop =1;
+        }
+        if (shop==1) {
+        document.getElementById("shop").innerHTML = "当前显示斗门店数据:";
+        document.getElementById("btn").style.display="inline";
+        }else if(shop==2){
+            document.getElementById("btn").style.display="none";
+            document.getElementById("shop").innerHTML = "当前显示金湾店数据:";
+        }
+
+        refurbishIndex();
+
+        myEcharts();
+
+        myEcharts1();
+
+    }
+
+
+
+
+    var time =  setInterval(function () {
+        refurbishIndex();
+    },5000);
+
+
+
+    var time2 = setInterval(function(){
+        myEcharts();myEcharts1();
+    },20*60*1000);
+
+    function refurbishIndex() {
+        //alert(1)
+        var optionJson = [];
+        $.ajax({
+            type: "post",
+            url: "/update",
+            data: {shop:shop},
+            async: false,
+            success: function (data) {
+                optionJson = data;
+
+                // optionJson.walkerNumber=0;
+                document.getElementById("lou11").innerHTML = optionJson.walkerNumber;
+                document.getElementById("lou21").innerHTML = optionJson.consumerNumber;
+                document.getElementById("lou31").innerHTML = optionJson.newConsumer;
+                document.getElementById("lou41").innerHTML = optionJson.jmpOut;
+                // document.getElementById("lou51").innerHTML = 100011;
+                document.getElementById("lou51").innerHTML = optionJson.dynamicConsumer;
+
+            }
+        });
+    };
+
+
+
+
+
+    function set(){
+        location.href="/set";
+    }
+
+    function detail(type){
+        location.href="/detail?shop="+shop+"&"+"type="+type;
+    }
+
+    //跳转到地图页面
+    function map(){
+        location.href="/map?shop="+shop;
+    }
+
+    function machineList(){
+        location.href="/machineList?shop="+shop;
+    }
+
+
+    function myEcharts(){
+        //alert(11);
+        var main1 = document.getElementById('main');
+        var myChart = echarts.init(main1);
+        // alert(11);
+        // 指定图表的配置项和数据
+        myChart.setOption({
+            title : {
+                text: '小时客流量',
+                subtext: '横向坐标:小时/间隔',
+                subtextStyle: {
+                    fontWeight:'normal',     //标题颜色
+                     color: 'black'
+                    }
+            },
+            tooltip : {
+                trigger: 'axis',
+                formatter: '{a0}:{c0}人<br />{b}:00'
+            },
+            legend: {
+                data:['客流量']
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    boundaryGap : false,
+                    data : []
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    axisLabel:{formatter:'{value}人'}
+                }
+            ],
+            series : [
+                {
+                    name:'客流量',
+                    type:'line',
+                    smooth:true,
+                    itemStyle: {normal: {areaStyle: {type: 'default'},
+                            color: '#00FF00'}},
+                    data:[]
+                }
+            ]
+        });
+
+        var hours=[];    //类别数组（实际用来盛放X轴坐标值）
+        var hourConsumerNumber=[];    //销量数组（实际用来盛放Y坐标值）
+
+
+
+        $.ajax({
+            type : "post",
+            async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+            url : "/hourconsumer",    //请求发送到TestServlet处
+            data : {shop:shop},
+            //dataType : "json",        //返回数据形式为json
+            success : function(data) {
+                //请求成功时执行该函数内容，result即为服务器返回的json对象
+                if (data) {
+                    for(var i=0;i<data.length;i++){
+                        hours.push(data[i].hours);    //挨个取出类别并填入类别数组
+                    }
+                    for(var i=0;i<data.length;i++){
+                        hourConsumerNumber.push(data[i].hourConsumerNumber);    //挨个取出销量并填入销量数组
+                    }
+                    myChart.hideLoading();    //隐藏加载动画
+                    //alert(data);
+                    myChart.setOption({        //加载数据图表
+                        xAxis : [
+                            {
+                                type : 'category',
+                                boundaryGap : false,
+                                data : hours
+                            }
+                        ],
+                        series : [
+                            {
+                                name:'客流量',
+                                type:'line',
+                                smooth:true,
+                                itemStyle: {normal: {areaStyle: {type: 'default'},
+                                        color: '#00FF00'}},
+                                data: hourConsumerNumber
+                            }
+                        ]
+                    });
+
+                }
+
+            },
+            error : function(errorMsg) {
+                //请求失败时执行该函数
+                //alert("图表请求数据失败!");
+                myChart.hideLoading();
+            }
+        })
+
+
+    };
+
+    function myEcharts1(){
+        //alert(11);
+        var main1 = document.getElementById('main1');
+        var myChart = echarts.init(main1);
+        // alert(11);
+        // 指定图表的配置项和数据
+        myChart.setOption({
+            title : {
+                text: '小时客人进店量',
+                subtext: '横向坐标:小时/间隔',
+                subtextStyle: {
+                    fontWeight:'normal',     //标题颜色
+                    color: 'black'
+                }
+            },
+            tooltip : {
+                trigger: 'axis',
+                formatter: '{a0}:{c0}人<br />{b}:00'
+            },
+            legend: {
+                data:['客人进店量']
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    boundaryGap : false,
+                    data : []
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    axisLabel:{formatter:'{value}人'}
+                }
+            ],
+            series : [
+                {
+                    name:'客人进店量',
+                    type:'line',
+                    smooth:true,
+                    itemStyle: {normal: {areaStyle: {type: 'default'},
+                            color: '#00FF00'}},
+                    data:[]
+                }
+            ]
+        });
+
+        var hours=[];    //类别数组（实际用来盛放X轴坐标值）
+        var hourInConsumerNumber=[];    //销量数组（实际用来盛放Y坐标值）
+
+
+
+        $.ajax({
+            type : "post",
+            async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+            url : "/hourinconsumer",    //请求发送到TestServlet处
+            data : {shop:shop},
+            //dataType : "json",        //返回数据形式为json
+            success : function(data) {
+                //请求成功时执行该函数内容，result即为服务器返回的json对象
+                if (data) {
+                    for(var i=0;i<data.length;i++){
+                        hours.push(data[i].hours);    //挨个取出类别并填入类别数组
+                    }
+                    for(var i=0;i<data.length;i++){
+                        hourInConsumerNumber.push(data[i].hourInConsumerNumber);    //挨个取出销量并填入销量数组
+                    }
+                    myChart.hideLoading();    //隐藏加载动画
+                    //alert(data);
+                    myChart.setOption({        //加载数据图表
+                        xAxis : [
+                            {
+                                type : 'category',
+                                boundaryGap : false,
+                                data : hours
+                            }
+                        ],
+                        series : [
+                            {
+                                name:'客人进店量',
+                                type:'line',
+                                smooth:true,
+                                itemStyle: {normal: {areaStyle: {type: 'default'},
+                                        color: '#00FF00'}},
+                                data: hourInConsumerNumber
+                            }
+                        ]
+                    });
+
+                }
+
+            },
+            error : function(errorMsg) {
+                //请求失败时执行该函数
+                //alert("图表请求数据失败!");
+                myChart.hideLoading();
+            }
+        })
+    };
+    /////////////////////////
+
+    window.onresize = function(){
+
+        myChart.resize();}
+
+
+
+</script>
+
+</html>

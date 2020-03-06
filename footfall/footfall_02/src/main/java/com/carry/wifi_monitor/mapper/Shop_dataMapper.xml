@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.carry.wifi_monitor.mapper.Shop_dataMapper">
+  <insert id="insert" >
+    insert into shop_data
+    (shop,walker_number,consumer_number,new_consumer,jumpout,dynamicconsumer,hour_consumernumber,hour_inconsumernumber,updatetime)
+    values 
+    (1,0,0,0,0,0,0,0,CURRENT_TIMESTAMP)
+  </insert>
+
+  <select id="selectWithin1hour" resultType="java.lang.Integer" >
+    select count(*) from shop_data where shop=1 and updatetime>=(NOW() - interval 1 hour)
+  </select>
+
+  <update id="updateWithin1hour" >
+        UPDATE
+        shop_data
+        SET
+        updatetime = CURRENT_TIMESTAMP
+        WHERE
+        id in (select id from (select * from shop_data where shop =1 ORDER BY updatetime desc LIMIT 1)as t)
+    </update>
+
+  <update id="update_SaveDataThread" >
+        UPDATE
+        shop_data
+        SET
+        consumer_number = #{consumer_number},walker_number = #{walker_number},new_consumer = #{new_consumer},hour_consumernumber = #{hour_consumernumber},hourConsumerNumber_hours = #{hourConsumerNumber_hours},hour_inconsumernumber = #{hour_inconsumernumber},hourInconsumernumber_hours = #{hourInconsumernumber_hours}
+        WHERE
+        id in (select id from (select * from shop_data where shop =1 ORDER BY updatetime desc LIMIT 1)as t)
+    </update>
+
+    <update id="update_CountDataThread" >
+        UPDATE
+        shop_data
+        SET
+        jumpout = #{jumpout},dynamicconsumer = #{dynamicconsumer}
+        WHERE
+        id in (select id from (select * from shop_data where shop =1 ORDER BY updatetime desc LIMIT 1)as t)
+    </update>
+
+  <insert id="insert_hour_consumernumber" >
+    insert into shop_data
+    (shop,updatetime)
+    values
+    (1,CURRENT_TIMESTAMP)
+  </insert>
+
+  <select id="show_hour_consumernumber" resultType="com.carry.wifi_monitor.entity.Shop_data" >
+    select hour_consumernumber,hourConsumerNumber_hours from shop_data where shop=#{shop} and updatetime>=(NOW() - interval 24 hour) order by updatetime desc limit #{num}
+  </select>
+
+    <select id="show_hour_inconsumernumber" resultType="com.carry.wifi_monitor.entity.Shop_data" >
+    select hour_inconsumernumber,hourInconsumernumber_hours from shop_data where shop=#{shop} and updatetime>=(NOW() - interval 24 hour) order by updatetime desc limit #{num}
+  </select>
+
+    <select id="search_detialData1" resultType="com.carry.wifi_monitor.entity.Shop_data" >
+    select walker_number,hourConsumerNumber_hours from shop_data where shop=#{shop} and updatetime>=(NOW() - interval 24 hour) order by updatetime desc limit #{num}
+  </select>
+
+    <select id="search_detialData2" resultType="com.carry.wifi_monitor.entity.Shop_data" >
+    select consumer_number,hourConsumerNumber_hours from shop_data where shop=#{shop} and updatetime>=(NOW() - interval 24 hour) order by updatetime desc limit #{num}
+  </select>
+
+    <select id="search_detialData3" resultType="com.carry.wifi_monitor.entity.Shop_data" >
+    select new_consumer,hourConsumerNumber_hours from shop_data where shop=#{shop} and updatetime>=(NOW() - interval 24 hour) order by updatetime desc limit #{num}
+  </select>
+
+    <select id="search_detialData4" resultType="com.carry.wifi_monitor.entity.Shop_data" >
+    select jumpout,hourConsumerNumber_hours from shop_data where shop=#{shop} and updatetime>=(NOW() - interval 24 hour) order by updatetime desc limit #{num}
+  </select>
+
+    <select id="show_realtimedata" resultType="java.lang.Integer" >
+    select dynamicconsumer from shop_data where shop=#{shop} order by updatetime desc limit 1
+  </select>
+
+    <!--<select id="show_realtimedata" resultType="com.carry.wifi_monitor.entity.Shop_data" >-->
+    <!--select walker_number,consumer_number,new_consumer,jumpout,dynamicconsumer from shop_data where shop=#{shop} order by updatetime desc limit 1-->
+  <!--</select>-->
+
+    <select id="countRealTimeData" resultType="com.carry.wifi_monitor.entity.Shop_data" >
+    select walker_number,consumer_number,new_consumer,jumpout,dynamicconsumer from shop_data where shop=#{shop} and updatetime>=(NOW() - interval 24 hour) order by updatetime desc limit #{num}
+  </select>
+
+    <!--<select id="countRealTimeData" resultType="com.carry.wifi_monitor.entity.Shop_data" >-->
+    <!--select walker_number,consumer_number,new_consumer,jumpout,dynamicconsumer from shop_data where shop=#{shop} and ( datediff ( updatetime , #{time} ) = 0 ) order by updatetime desc-->
+  <!--</select>-->
+
+    <select id="show_NowData" resultType="java.lang.Integer" >
+    select dynamicconsumer from shop_data where shop=#{shop} order by updatetime desc limit 1
+  </select>
+</mapper>

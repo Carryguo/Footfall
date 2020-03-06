@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="zh"><!-- 语言 -->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> <!-- IE8/9及以后的版本都会以最高版本IE来渲染页面 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 手机电脑缩放兼容性 -->
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0,minimum-scale=1.0,user-scalable=yes" /> -->
+    <!-- 缩放比 是否允许缩放 -->
+    <title>详细显示</title>
+    <link rel="stylesheet" type="text/css" href="/styles5.css">
+    <!--<link rel="stylesheet" type="text/css" href="/styles1.css">-->
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+    <script src="echarts/echarts.min.js"></script>
+    <!-- rel-css样式显示出来 -->
+
+
+</head>
+<body>
+<!-- 背景 -->
+<div class="wrapper">
+    <br/>
+
+    <h1 id="title"></h1>
+    <br/>
+    <div id="shop"></div>
+
+    <div id="detail"></div>
+    <form class="form">
+        <a><button onclick="back()" type="button" >返回店面信息</button></a><br/><br/>
+    </form>
+    <ul class="bg-bubbles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+</body>
+
+<script type="text/javascript">
+    function GetQueryString(name)
+    {
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    }
+
+    var shop =1;
+    var type=1;
+    var description;
+
+
+    //获取参数
+    onload = function(){
+        var canshu = GetQueryString("shop")
+        var canshu2 = GetQueryString("type")
+
+        if(canshu2!=null)
+        {
+            type = canshu2;//alert("get到参数:"+type);
+        }
+        else{
+            type =1;
+        }
+
+
+
+        if(canshu!=null)
+        {
+            shop = canshu;
+        }
+        else{
+            shop =1;
+        }
+
+        // alert("shop:"+shop+","+"type:"+type);
+        if (shop==1) {
+            document.getElementById("shop").innerHTML = "当前显示斗门店数据:";
+        }else if(shop==2){
+            document.getElementById("shop").innerHTML = "当前显示金湾店数据:";
+        }
+        myEcharts();
+
+    }
+
+    function back(){
+       var canshu = GetQueryString("shop");
+        location.href="/index?shop="+canshu;
+    }
+
+    var time2 = setInterval(function(){
+        myEcharts();
+    },20*60*1000);
+
+    function myEcharts(){
+        var myChart = echarts.init(document.getElementById('detail'));
+
+        // 指定图表的配置项和数据
+        myChart.setOption({
+            title : {
+                text: '小时流量详细',
+                subtext: '横向坐标:小时/间隔',
+                subtextStyle: {
+                    fontWeight:'normal',     //标题颜色
+                    color: 'black'
+                }
+            },
+            tooltip : {
+                trigger: 'axis',
+                formatter: '{a0}:{c0}人<br />{b}:00'
+            },
+            legend: {
+                data:['流量详细']
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    boundaryGap : false,
+                    data : []
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    axisLabel:{formatter:'{value}人'}
+                }
+            ],
+            series : [
+                {
+                    name:'小时人数',
+                    type:'line',
+                    smooth:true,
+                    itemStyle: {normal: {areaStyle: {type: 'default'},
+                            color: '#00FF00'}},
+                    data:[]
+                }
+            ]
+        });
+
+        var hours=[];    //类别数组（实际用来盛放X轴坐标值）
+        var detailNumber=[];    //销量数组（实际用来盛放Y坐标值）
+
+        $.ajax({
+            type : "post",
+            async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+            url : "/searchDetail",    //请求发送到TestServlet处
+            data : {shop:shop,type:type},
+            //dataType : "json",        //返回数据形式为json
+            success : function(data) {
+                //请求成功时执行该函数内容，result即为服务器返回的json对象
+                if (data) {
+                    for(var i=0;i<data.length;i++){
+                        hours.push(data[i].hours);    //挨个取出类别并填入类别数组
+
+                    }
+                    for(var i=0;i<data.length;i++){
+                        detailNumber.push(data[i].detailData);    //挨个取出销量并填入销量数组
+
+                    }
+                    myChart.hideLoading();    //隐藏加载动画
+                    //alert(data);
+                    myChart.setOption({        //加载数据图表
+                        xAxis : [
+                            {
+                                type : 'category',
+                                boundaryGap : false,
+                                data : hours
+                            }
+                        ],
+                        series : [
+                            {
+                                name:'小时人数',
+                                type:'line',
+                                smooth:true,
+                                itemStyle: {normal: {areaStyle: {type: 'default'},
+                                        color: '#00FF00'}},
+                                data: detailNumber
+                            }
+                        ]
+                    });
+                    document.getElementById("title").innerHTML = data[0].description;
+                }
+            },
+            error : function(errorMsg) {
+                //请求失败时执行该函数
+                //alert("图表请求数据失败!");
+                myChart.hideLoading();
+            }
+        })
+    };
+    window.onresize = function(){
+        myChart.resize();}
+</script>
+
+</html>
